@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Générique - dev version</title>
+  <!-- Lien vers le CSS existant dans le même dossier -->
+  <link rel="stylesheet" href="generique.css">
+  <style>
+    /* Petit reset pour la page standalone afin que le widget soit centré */
+    body { display:flex; align-items:center; justify-content:center; height:100vh; background:#f4f6f8; margin:0; }
+  </style>
+</head>
+<body>
+
+<div id="widget-generique-standalone" class="widget widget-generique">
+  <div class="widget-content-vertical">
+    <div class="info-container">
+      <div class="widget-titre">Générique (dev)</div>
+      <div class="widget-valeur" id="valeur-generique">--</div>
+      <div class="widget-source" id="source-generique">source : local</div>
+    </div>
+  </div>
+</div>
+
+<script src="generique.js"></script>
+<script>
+(function(){
+  const wrapper = document.getElementById('widget-generique-standalone');
+  if(!wrapper) return;
+  const widgetId = wrapper.id;
+  // Simulation: mise à jour toutes les 2s
+  setInterval(()=>{
+    const v = (Math.random() * 100).toFixed(2);
+    window[widgetId].updateValue(Number(v), new Date().toISOString(), 'local');
+  }, 2000);
+})();
+</script>
+
+</body>
+</html>

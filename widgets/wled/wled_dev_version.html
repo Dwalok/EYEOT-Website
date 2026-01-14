@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Widget WLED - Hue + HEX éditable (HQ)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top, #222 0, #000 55%);
+        }
+
+        .widget {
+            width: 360px;
+            height: 230px;
+            padding: 20px;
+            background: rgba(18, 18, 30, 0.85);
+            border-radius: 24px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            flex-direction: column;
+            color: #f7f7ff;
+            font-size: 16px;
+        }
+
+        .widget-split {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* Pastilles profils */
+        .side-dots {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .dot {
+            width: 16px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30%;
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .dot.active {
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.9);
+            transform: scale(1.15);
+        }
+
+        .controls-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .widget-titre {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .control-label {
+            font-size: 12px;
+            text-align: left;
+            opacity: 0.85;
+            margin-bottom: 4px;
+        }
+
+        /* Partie haute : couleur */
+        .top-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .color-block {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Roue couleur style Hue */
+        .color-wheel-container {
+            position: relative;
+            width: 120px;   /* taille affichée */
+            height: 120px;  /* taille affichée */
+            flex-shrink: 0;
+        }
+
+        .color-wheel {
+            width: 120px;   /* affichage (CSS) */
+            height: 120px;  /* affichage (CSS) */
+            border-radius: 50%;
+            display: block;
+        }
+
+        .color-cursor {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 6px rgba(0,0,0,0.9);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+
+        .color-preview-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.9);
+            box-shadow: 0 0 8px rgba(0,0,0,0.7);
+        }
+
+        /* Champ HEX éditable */
+        .color-value {
+            font-size: 13px;
+            opacity: 0.9;
+            font-variant-numeric: tabular-nums;
+            background: transparent;
+            border: none;
+            color: #f7f7ff;
+            outline: none;
+            width: 80px;
+        }
+
+        .color-value::placeholder {
+            color: rgba(247,247,255,0.4);
+        }
+
+        .color-value.invalid {
+            color: #ff6b6b;
+        }
+
+        /* Partie basse : luminosité */
+        .bottom-row {
+            margin-top: 6px;
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slider-row input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #111, #fff);
+            outline: none;
+        }
+
+        .slider-row input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid #000;
+            box-shadow: 0 0 4px rgba(0,0,0,0.9);
+            cursor: pointer;
+        }
+
+        .slider-row input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid #000;
+            box-shadow: 0 0 4px rgba(0,0,0,0.9);
+            cursor: pointer;
+        }
+
+        .slider-value {
+            min-width: 42px;
+            font-size: 13px;
+            text-align: right;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="widget widget-wled">
+    <div class="widget-split">
+
+        <!-- Pastilles profils -->
+        <div class="side-dots">
+            <div class="dot active" data-index="1" title="Profil 1"></div>
+            <div class="dot" data-index="2" title="Profil 2"></div>
+            <div class="dot" data-index="3" title="Profil 3"></div>
+        </div>
+
+        <div class="controls-container">
+            <div class="widget-header">
+                <div class="widget-titre">WLED</div>
+            </div>
+
+            <!-- Partie haute : couleur -->
+            <div class="top-row">
+                <div class="color-wheel-container">
+                    <!-- Canvas haute résolution (240x240) -->
+                    <canvas id="wled-color-wheel" class="color-wheel" width="2000" height="2000"></canvas>
+                    <div id="wled-color-cursor" class="color-cursor"></div>
+                </div>
+
+                <div class="color-block">
+                    <div class="control-label">Couleur</div>
+                    <div class="color-preview-row">
+                        <!-- Une seule pastille de couleur -->
+                        <div class="color-preview" id="wled-color-preview"></div>
+                        <!-- Champ HEX éditable -->
+                        <input
+                            id="wled-color-value"
+                            class="color-value"
+                            value="#FF8800"
+                            maxlength="7"
+                            spellcheck="false"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partie basse : luminosité -->
+            <div class="bottom-row">
+                <div class="control-label">Luminosité</div>
+                <div class="slider-row">
+                    <input
+                        type="range"
+                        id="wled-intensity-slider"
+                        min="1"
+                        max="254"
+                        value="128"
+                    >
+                    <span id="wled-intensity-value" class="slider-value">128</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const widget = document.querySelector('.widget-wled');
+        if (!widget) return;
+
+        const dots = widget.querySelectorAll('.dot');
+        const intensitySlider = widget.querySelector('#wled-intensity-slider');
+        const intensityValue = widget.querySelector('#wled-intensity-value');
+
+        const wheel = widget.querySelector('#wled-color-wheel');
+        const cursor = widget.querySelector('#wled-color-cursor');
+        const colorPreview = widget.querySelector('#wled-color-preview');
+        const colorValue = widget.querySelector('#wled-color-value');
+
+        const ctx = wheel.getContext('2d');
+        // Active le lissage quand le canvas est réduit en CSS
+        ctx.imageSmoothingEnabled = true;
+
+        let width = wheel.width;   // 240
+        let height = wheel.height; // 240
+        let cx = width / 2;
+        let cy = height / 2;
+        let radius = Math.min(cx, cy) - 3;
+
+        // État par profil : h,s,v + brightness
+        // h,s,v dans [0,1], brightness dans [1..254]
+        const state = {
+            1: { h: 0.08, s: 0.9, v: 1.0, brightness: 128 },
+            2: { h: 0.55, s: 0.9, v: 1.0, brightness: 180 },
+            3: { h: 0.83, s: 0.9, v: 1.0, brightness: 80 }
+        };
+
+        let currentIndex = 1;
+        let isDragging = false;
+
+        /* ---------- Utilitaires couleur ---------- */
+
+        function hsvToRgb(h, s, v) {
+            let r, g, b;
+            let i = Math.floor(h * 6);
+            let f = h * 6 - i;
+            let p = v * (1 - s);
+            let q = v * (1 - f * s);
+            let t = v * (1 - (1 - f) * s);
+
+            switch (i % 6) {
+                case 0: r = v; g = t; b = p; break;
+                case 1: r = q; g = v; b = p; break;
+                case 2: r = p; g = v; b = t; break;
+                case 3: r = p; g = q; b = v; break;
+                case 4: r = t; g = p; b = v; break;
+                case 5: r = v; g = p; b = q; break;
+            }
+
+            return {
+                r: Math.round(r * 255),
+                g: Math.round(g * 255),
+                b: Math.round(b * 255)
+            };
+        }
+
+        function rgbToHex(r, g, b) {
+            const toHex = (x) => x.toString(16).padStart(2, '0');
+            return '#' + toHex(r) + toHex(g) + toHex(b);
+        }
+
+        function hexToRgb(hex) {
+            const m = hex.match(/^#?([0-9a-fA-F]{6})$/);
+            if (!m) return null;
+            const intVal = parseInt(m[1], 16);
+            const r = (intVal >> 16) & 0xff;
+            const g = (intVal >> 8) & 0xff;
+            const b = intVal & 0xff;
+            return { r, g, b };
+        }
+
+        function rgbToHsv(r, g, b) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            const d = max - min;
+
+            let h = 0;
+            let s = max === 0 ? 0 : d / max;
+            let v = max;
+
+            if (d !== 0) {
+                switch (max) {
+                    case r:
+                        h = (g - b) / d + (g < b ? 6 : 0);
+                        break;
+                    case g:
+                        h = (b - r) / d + 2;
+                        break;
+                    case b:
+                        h = (r - g) / d + 4;
+                        break;
+                }
+                h /= 6;
+            }
+
+            return { h, s, v };
+        }
+
+        /* ---------- Helpers coord -> canvas / affichage ---------- */
+
+        function getScale() {
+            const rect = wheel.getBoundingClientRect();
+            const scaleX = wheel.width / rect.width;
+            const scaleY = wheel.height / rect.height;
+            return { rect, scaleX, scaleY };
+        }
+
+        function setCursorFromInternalCoords(xInt, yInt) {
+            const { rect, scaleX, scaleY } = getScale();
+            const xCss = xInt / scaleX;
+            const yCss = yInt / scaleY;
+            cursor.style.left = xCss + 'px';
+            cursor.style.top = yCss + 'px';
+        }
+
+        /* ---------- Dessin roue type Hue ---------- */
+
+        function drawColorWheel() {
+            const imageData = ctx.createImageData(width, height);
+            const data = imageData.data;
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const dx = x - cx;
+                    const dy = y - cy;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    const index = (y * width + x) * 4;
+
+                    if (dist <= radius) {
+                        let angle = Math.atan2(dy, dx); // [-PI, PI]
+                        let h = (angle + Math.PI) / (2 * Math.PI); // [0, 1]
+                        let s = dist / radius; // [0, 1]
+                        const v = 1.0;
+
+                        const { r, g, b } = hsvToRgb(h, s, v);
+
+                        data[index] = r;
+                        data[index + 1] = g;
+                        data[index + 2] = b;
+                        data[index + 3] = 255;
+                    } else {
+                        data[index + 3] = 0;
+                    }
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        /* ---------- Mise à jour UI à partir de l'état ---------- */
+
+        function updateUIFromState() {
+            const s = state[currentIndex];
+
+            // Couleur avec luminosité appliquée
+            const vScaled = s.brightness / 254; // [0..1]
+            const rgb = hsvToRgb(s.h, s.s, vScaled);
+            const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+
+            // Pastille + champ hex
+            colorPreview.style.backgroundColor = hex;
+            colorValue.classList.remove('invalid');
+            colorValue.value = hex.toUpperCase();
+
+            // Slider luminosité
+            intensitySlider.value = s.brightness;
+            intensityValue.textContent = s.brightness.toString();
+
+            // Position du curseur dans la roue (h,s) en coordonnées internes
+            const r = s.s * radius;
+            const angle = s.h * 2 * Math.PI - Math.PI;
+            const xInt = cx + r * Math.cos(angle);
+            const yInt = cy + r * Math.sin(angle);
+            setCursorFromInternalCoords(xInt, yInt);
+        }
+
+        function setActiveDot(index) {
+            dots.forEach(dot => {
+                const dotIndex = Number(dot.dataset.index);
+                dot.classList.toggle('active', dotIndex === index);
+            });
+        }
+
+        /* ---------- Gestion cercle / drag ---------- */
+
+        function updateColorFromPosition(clientX, clientY) {
+            const { rect, scaleX, scaleY } = getScale();
+
+            // Coordonnées internes (pixels canvas)
+            let xInt = (clientX - rect.left) * scaleX;
+            let yInt = (clientY - rect.top) * scaleY;
+
+            const dx = xInt - cx;
+            const dy = yInt - cy;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist > radius) {
+                const ratio = radius / dist;
+                dist = radius;
+                xInt = cx + dx * ratio;
+                yInt = cy + dy * ratio;
+            }
+
+            const angle = Math.atan2(yInt - cy, xInt - cx); // [-PI, PI]
+            let h = (angle + Math.PI) / (2 * Math.PI); // [0..1]
+            let sVal = Math.min(dist / radius, 1);
+
+            const profile = state[currentIndex];
+            profile.h = h;
+            profile.s = sVal;
+
+            updateUIFromState();
+
+            // Ici tu pourras appeler ton API WLED
+            // sendWledColor(currentIndex, profile.h, profile.s, profile.brightness);
+        }
+
+        wheel.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            updateColorFromPosition(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            updateColorFromPosition(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        /* ---------- Slider luminosité ---------- */
+
+        intensitySlider.addEventListener('input', () => {
+            const value = Number(intensitySlider.value);
+            state[currentIndex].brightness = value;
+            updateUIFromState();
+
+            // Ici tu pourras appeler ton API WLED
+            // sendWledBrightness(currentIndex, value);
+        });
+
+        /* ---------- Champ HEX éditable ---------- */
+
+        function applyHexFromInput() {
+            let hex = colorValue.value.trim();
+
+            const match = hex.match(/^#?([0-9a-fA-F]{6})$/);
+            if (!match) {
+                colorValue.classList.add('invalid');
+                return;
+            }
+
+            hex = '#' + match[1].toUpperCase();
+            const rgb = hexToRgb(hex);
+            if (!rgb) {
+                colorValue.classList.add('invalid');
+                return;
+            }
+
+            const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+            const profile = state[currentIndex];
+
+            if (hsv.v <= 0.0001) {
+                profile.s = 0;
+                profile.v = 0;
+                profile.brightness = 1;
+            } else {
+                profile.h = hsv.h;
+                profile.s = hsv.s;
+                profile.v = hsv.v;
+                profile.brightness = Math.max(1, Math.min(254, Math.round(hsv.v * 254)));
+            }
+
+            colorValue.classList.remove('invalid');
+            updateUIFromState();
+
+            // Ici tu pourras appeler ton API WLED
+            // sendWledColor(currentIndex, profile.h, profile.s, profile.brightness);
+        }
+
+        colorValue.addEventListener('change', applyHexFromInput);
+        colorValue.addEventListener('blur', applyHexFromInput);
+        colorValue.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                applyHexFromInput();
+                colorValue.blur();
+            }
+        });
+
+        /* ---------- Changement de profil ---------- */
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const idx = Number(dot.dataset.index);
+                if (idx === currentIndex) return;
+                currentIndex = idx;
+                setActiveDot(idx);
+                updateUIFromState();
+            });
+        });
+
+        /* ---------- Init ---------- */
+        drawColorWheel();
+        setActiveDot(currentIndex);
+        updateUIFromState();
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Temperature v2 - dev version</title>
+  <!-- Lien vers le CSS existant -->
+  <link rel="stylesheet" href="temperature_v2.css">
+  <style>body{display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style>
+</head>
+<body>
+
+<div id="widget-temperature-standalone" class="widget widget-temperature">
+
+  <div class="widget-split">
+
+    <!-- Pastilles à gauche de info-container -->
+    <div class="side-dots">
+      <div class="dot active" data-index="1"></div>
+      <div class="dot" data-index="2"></div>
+      <div class="dot" data-index="3"></div>
+    </div>
+
+    <div class="info-container">
+      <div class="widget-titre">Température (dev)</div>
+      <div class="widget-valeur" id="valeur-temperature-v2">-- <span class="unite">°C</span></div>
+      <div class="widget-source" id="source-temperature-v2">source : local</div>
+    </div>
+
+    <div class="thermo-container">
+      <div class="thermo-fill" id="thermo-fill-v2"></div>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<script>
+(function(){
+  const wrapper = document.getElementById('widget-temperature-standalone');
+  if(!wrapper) return;
+  const widgetId = wrapper.id;
+  window[widgetId] = {
+    updateValue: function(valeur, timestamp){
+      console.log('updateValue temperature', valeur, timestamp, widgetId);
+      const valeurEl = wrapper.querySelector('#valeur-temperature-v2');
+      if(valeurEl) valeurEl.innerHTML = `${valeur} <span class="unite">°C</span>`;
+      const thermoFill = wrapper.querySelector('#thermo-fill-v2');
+      if(thermoFill){
+        // Normaliser la valeur pour une jauge visuelle (ex: -20..+80 -> 0..100)
+        const clamped = Math.min(Math.max(valeur, -20), 80);
+        const percentage = ((clamped + 20) / 100) * 100;
+        thermoFill.style.height = `${percentage}%`;
+        if(valeur < 0) thermoFill.style.background = 'linear-gradient(to top,#4A90E2,#00c6ff)';
+        else if(valeur < 20) thermoFill.style.background = 'linear-gradient(to top,#7ED321,#9EEB8D)';
+        else if(valeur < 30) thermoFill.style.background = 'linear-gradient(to top,#F5A623,#FFD27A)';
+        else thermoFill.style.background = 'linear-gradient(to top,#D0021B,#FF6B6B)';
+      }
+    }
+  };
+
+  // Simulation: update every 2s
+  setInterval(()=>{
+    const v = (Math.random()*20 + 5).toFixed(2); // between 5 and 25°C
+    window[widgetId].updateValue(Number(v), new Date().toISOString());
+  },2000);
+
+  // Gestion des pastilles
+    const dots = wrapper.querySelectorAll('.dot');
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        dots.forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+        console.log('Pastille sélectionnée :', dot.dataset.index);
+      });
+    });
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+/* Conteneur principal du widget Position */
+/* Spécificité augmentée pour prendre le dessus sur .widget (température) */
+.widget.widget-position {
+    width: 100%;              /* prend toute la largeur de la case de grid */
+    height: 100%;             /* prend toute la hauteur de la case de grid */
+    padding: 10px;
+    border-radius: 20px;
+    background: rgb(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 8px;
+    color: #ffffff;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    font-size: 18px;
+    backdrop-filter: blur(15px);
+}
+
+/* Bande du haut : pastilles + source */
+.widget-position .widget-top-position {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 0 0 auto; /* hauteur basée sur le contenu uniquement */
+}
+
+/* Conteneur des pastilles */
+.widget-position .side-dots-position {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Pastille (nom unique pour ne pas interférer avec .dot globale) */
+.widget-position .dot-position {
+    width: 14px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 20%;
+    border-color: black;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Pastille active */
+.widget-position .dot-position.active-position {
+    border-radius: 20%;
+    border-color: black;
+    background: #ffffff;
+    box-shadow: 0 0 8px rgba(255,255,255,0.8);
+    transform: scale(1.2);
+}
+
+/* Texte de la source */
+.widget-position .widget-source {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    text-align: right;
+}
+
+
+/* Conteneur de la carte */
+/* Prend tout l’espace restant dans le widget */
+.widget-position .map-container {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 120px;          /* pour éviter une carte trop petite si widget réduit */
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+}
+
+/* Div cible Leaflet */
+#map-position-v2 {
+    width: 100%;
+    height: 100%;
+}

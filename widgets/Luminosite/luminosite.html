@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="/static/widgets/Luminosite/luminosite.css">
+
+<div class="widget widget-luminosite">
+    <button class="view-toggle" aria-label="Basculer la vue graphique" title="Basculer la vue"></button>
+
+    <div class="side-dots">
+        <div class="dot active" data-index="1"></div>
+        <div class="dot" data-index="2"></div>
+        <div class="dot" data-index="3"></div>
+    </div>
+
+    <div class="view view-card active-view">
+        <div class="widget-content-vertical">
+            <div class="card-row">
+                <div class="dots-slot dots-slot-card"></div>
+                <div class="info-container">
+                    <div class="widget-titre">Luminosite</div>
+                    <div class="widget-valeur" id="valeur-luminosite">-- <span class="unite">lux</span></div>
+                    <div class="widget-source" id="source-luminosite">source : local</div>
+                </div>
+            </div>
+            <div class="lumino-container">
+                <div class="lumino-fill" id="lumino-fill" style="width:0%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="view view-graph">
+        <div class="graph-header">
+            <div class="dots-slot dots-slot-graph"></div>
+            <div class="widget-source" id="source-luminosite-graph">source : local</div>
+        </div>
+        <div class="graph-body">
+            <canvas class="luminosite-graph" width="300" height="140"></canvas>
+            <div class="graph-empty">En attente de donnees...</div>
+        </div>
+    </div>
+</div>
+<script src="/static/widgets/Luminosite/luminosite.js"></script>

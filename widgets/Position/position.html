@@ -1,0 +1,24 @@
+<link rel="stylesheet" href="/static/widgets/Position/position.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<div class="widget widget-position">
+  <div class="widget-top-position">
+    <!-- Pastilles : 2 = w-size-2 (défaut), 3 = w-size-3 -->
+    <div class="side-dots-position">
+      <div class="dot-position active-position" data-index="2"></div>
+      <div class="dot-position" data-index="3"></div>
+    </div>
+
+    <div class="widget-source widget-source-position" id="source-position-v2">
+      source : simulation
+    </div>
+
+  </div>
+
+  <div class="map-container">
+    <div id="map-position-v2"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/static/widgets/Position/position.js"></script>

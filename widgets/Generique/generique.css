@@ -1,0 +1,198 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+.widget-generique {
+    width: 300px;
+    height: 200px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    flex-shrink: 0;
+    position: relative;
+}
+
+/* Structure verticale interne du widget */
+.widget-content-vertical {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+}
+
+/* Partie infos */
+.info-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+/* Titre */
+.widget-titre {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Valeur */
+.widget-valeur {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Source */
+.widget-source {
+    
+    font-size: 12px;
+    opacity: 0.8;
+    color: #ffffff;
+    text-align: center;
+}
+
+.card-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.view-card {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.side-dots {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+}
+
+.dot {
+    width: 14px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 20%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.dot.active {
+    background: #ffffff;
+    box-shadow: 0 0 8px rgba(255,255,255,0.8);
+    transform: scale(1.2);
+}
+
+/* === Vue graphique & toggle === */
+.view {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.view.active-view {
+    display: block;
+}
+
+.view-graph {
+    display: none;
+    flex-direction: column;
+}
+
+.view-graph.active-view {
+    display: flex;
+}
+
+.view-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-toggle:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+.dots-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dots-slot-card {
+    flex: 0 0 auto;
+}
+
+.view-card .side-dots {
+    flex-direction: column;
+    gap: 12px;
+}
+
+.view-graph .side-dots {
+    flex-direction: row;
+    gap: 8px;
+}
+
+.graph-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.graph-body {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+}
+
+.generique-graph {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.graph-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+}

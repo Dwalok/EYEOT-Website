@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Humidite - dev version</title>
+  <!-- Lien vers le CSS existant dans le même dossier -->
+  <link rel="stylesheet" href="humidite.css">
+  <style>
+    /* Petit reset pour la page standalone afin que le widget soit centré */
+    body { display:flex; align-items:center; justify-content:center; height:100vh; background:#f4f6f8; margin:0; }
+  </style>
+</head>
+<body>
+
+<div id="widget-humidite-standalone" class="widget widget-humidite">
+  <div class="widget-content-vertical">
+    <div class="info-container">
+      <div class="widget-titre">Humidité (dev)</div>
+      <div class="widget-valeur" id="valeur-humidite">-- <span class="unite">%</span></div>
+      <div class="widget-source" id="source-humidite">source : local</div>
+    </div>
+    <div class="hygro-container">
+      <div class="hygro-fill" id="hygro-fill"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const wrapper = document.getElementById('widget-humidite-standalone');
+  if(!wrapper) return;
+  const widgetId = wrapper.id;
+  window[widgetId] = {
+    updateValue: function(valeur, timestamp) {
+      console.log('updateValue humidity', valeur, timestamp, widgetId);
+      const valeurEl = wrapper.querySelector('#valeur-humidite');
+      if(valeurEl) valeurEl.innerHTML = `${valeur} <span class="unite">%</span>`;
+      const humiditeFill = wrapper.querySelector('#hygro-fill');
+      if(humiditeFill){
+        const percentage = Math.min(Math.max(valeur,0),100);
+        humiditeFill.style.width = `${percentage}%`;
+        if(valeur < 30){
+          humiditeFill.style.background = 'linear-gradient(to right, #ff6b6b, #ff4757)';
+        } else if(valeur < 60){
+          humiditeFill.style.background = 'linear-gradient(to right, #7ED321, #50C878)';
+        } else {
+          humiditeFill.style.background = 'linear-gradient(to right, #4A90E2, #0072ff)';
+        }
+      }
+    }
+  };
+
+  // Simulation: mise à jour toutes les 2s
+  setInterval(()=>{
+    const v = (Math.random() * 60).toFixed(2);
+    window[widgetId].updateValue(Number(v), new Date().toISOString());
+  }, 2000);
+})();
+</script>
+
+</body>
+</html>

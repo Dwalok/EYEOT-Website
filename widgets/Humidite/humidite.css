@@ -1,0 +1,269 @@
+/* Style général du widget */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+.widget {
+    width: 300px;
+    height: 200px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    flex-shrink: 0;
+    position: relative;
+}
+
+
+
+/* Partie infos */
+.info-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+    align-items: center;
+    padding: 10px;
+}
+
+/* Titre */
+.widget-titre {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Valeur */
+.widget-valeur {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Unité */
+.widget-valeur .unite {
+    font-size: 18px;
+    margin-left: 4px;
+    opacity: 0.7;
+}
+
+/* Source */
+.widget-source {
+    
+    font-size: 12px;
+    opacity: 0.8;
+    color: #ffffff;
+    text-align: center;
+}
+
+/* Jauge horizontale pour humidité */
+.hygro-container {
+    height: 5px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.322);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Remplissage dynamique de la jauge */
+.hygro-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    border-radius: 20px 0 0 20px;
+    transition: width 0.4s ease;
+}
+/* Conteneur des pastilles à gauche */
+.side-dots {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    /* pas de position:absolute -> elles restent à gauche de info-container */
+}
+
+/* Pastille */
+.dot {
+    width: 14px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 20%;
+    border-color: black;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Pastille sélectionnée */
+.dot.active {
+    border-radius: 20%;
+    border-color: black;
+    background: #ffffff;
+    box-shadow: 0 0 8px rgba(255,255,255,0.8);
+    transform: scale(1.2);
+}
+
+/* Nouvelle rangée horizontale pour pastilles + infos */
+.row-split {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* (Optionnel) .info-container centré verticalement dans la rangée */
+.row-split .info-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* manquait dans ton humidite.css */
+  align-items: center;
+}
+
+/* Le conteneur vertical prend toute la hauteur du widget */
+.widget-content-vertical {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+/* La rangée avec les pastilles + info, alignée horizontalement,
+   et centrée VERTICALEMENT dans la hauteur du widget */
+.row-split {
+  display: flex;
+  align-items: center;  /* centre verticalement les contenus dans la rangée */
+  gap: 10px;
+  width: 100%;
+  flex: 1;              /* prend la hauteur disponible pour centrer comme Température */
+  margin-block: auto;   /* se centre verticalement dans le widget */
+}
+
+/* L'info est bien centrée dans son propre bloc */
+.row-split .info-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* centre verticalement le texte à l’intérieur */
+  align-items: center;      /* centre horizontalement le texte */
+}
+
+/* (Optionnel) les pastilles restent en colonne, centrées dans la rangée */
+.row-split .side-dots {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* === Vue graphique & toggle === */
+.view {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.view.active-view {
+  display: block;
+}
+
+.view-graph {
+  display: none;
+  flex-direction: column;
+}
+
+.view-graph.active-view {
+  display: flex;
+}
+
+.view-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-toggle:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.dots-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dots-slot-card {
+  flex: 0 0 auto;
+}
+
+.view-card .side-dots {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.view-graph .side-dots {
+  flex-direction: row;
+  gap: 8px;
+}
+
+.graph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.graph-body {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+}
+
+.humidite-graph {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.graph-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+}

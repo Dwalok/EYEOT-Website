@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="/static/widgets/Generique/generique.css">
+
+<div class="widget widget-generique">
+  <button class="view-toggle" aria-label="Basculer la vue graphique" title="Basculer la vue"></button>
+
+  <div class="side-dots">
+    <div class="dot active" data-index="1"></div>
+    <div class="dot" data-index="2"></div>
+    <div class="dot" data-index="3"></div>
+  </div>
+
+  <div class="view view-card active-view">
+    <div class="widget-content-vertical">
+      <div class="card-row">
+        <div class="dots-slot dots-slot-card"></div>
+        <div class="info-container">
+          <div class="widget-titre">Generique</div>
+          <div class="widget-valeur" id="valeur-generique">--</div>
+          <div class="widget-source" id="source-generique">source : local</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="view view-graph">
+    <div class="graph-header">
+      <div class="dots-slot dots-slot-graph"></div>
+      <div class="widget-source" id="source-generique-graph">source : local</div>
+    </div>
+    <div class="graph-body">
+      <canvas class="generique-graph" width="300" height="140"></canvas>
+      <div class="graph-empty">En attente de donnees...</div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/widgets/Generique/generique.js"></script>

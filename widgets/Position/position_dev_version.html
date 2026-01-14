@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Widget Position - dev</title>
+
+  <link rel="stylesheet" href="position.css">
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+</head>
+<body>
+
+<div id="widget-position-standalone" class="widget widget-position w-size-2">
+  <div class="widget-top">
+
+    <!-- Pastilles -->
+    <div class="side-dots">
+      <div class="dot active" data-index="2"></div>
+      <div class="dot" data-index="3"></div>
+    </div>
+
+    <div class="widget-source" id="source-position-v2">
+      source : simulation
+    </div>
+  </div>
+
+  <div class="map-container">
+    <div id="map-position-v2"></div>
+  </div>
+</div>
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+(function() {
+    // --- récupération du wrapper ---
+    let wrapper = document.getElementById('widget-position-standalone')
+        || document.querySelector('.widget.widget-position');
+
+    if (!wrapper) return;
+
+    const widgetId = wrapper.id;
+    const sourceEl = wrapper.querySelector('#source-position-v2');
+    const mapDiv   = wrapper.querySelector('#map-position-v2');
+
+    // --- init Leaflet ---
+    const map = L.map(mapDiv).setView([46.5, 2.0], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19
+    }).addTo(map);
+
+    let marker = L.marker([46.5, 2.0]).addTo(map);
+
+    // --- API publique ---
+    window[widgetId] = {
+        updateValue: function(latitude, longitude, timestamp, sourceLabel) {
+            if (sourceLabel && sourceEl)
+                sourceEl.textContent = "source : " + sourceLabel;
+
+            if (typeof latitude === 'number' && typeof longitude === 'number') {
+                marker.setLatLng([latitude, longitude]);
+                map.setView([latitude, longitude], map.getZoom());
+            }
+        }
+    };
+
+    // --- gestion des pastilles taille ---
+    const dots = wrapper.querySelectorAll('.dot');
+
+    const gridContainer = wrapper.closest('.contenu-droite');
+    let gridItem = wrapper;
+
+    if (gridContainer) {
+        let el = wrapper;
+        while (el && el.parentElement !== gridContainer) {
+            el = el.parentElement;
+        }
+        if (el) gridItem = el;
+    }
+
+    const inDashboard = !!gridContainer;
+
+    function applySize(idx) {
+        gridItem.classList.remove('w-size-2', 'w-size-3');
+        if (idx === 3) gridItem.classList.add('w-size-3');
+        else gridItem.classList.add('w-size-2'); // défaut
+    }
+
+    // état initial : dot 2 active → w-size-2
+    const activeDot = wrapper.querySelector('.dot.active');
+    if (inDashboard) applySize(Number(activeDot.dataset.index));
+
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            dots.forEach(d => d.classList.remove('active'));
+            dot.classList.add('active');
+
+            if (inDashboard)
+                applySize(Number(dot.dataset.index));
+        });
+    });
+
+    // simulation
+    setInterval(() => {
+        const lat = 45 + Math.random() * 10;
+        const lon = -5 + Math.random() * 10;
+        window[widgetId].updateValue(lat, lon, new Date().toISOString(), "simulation");
+    }, 2000);
+})();
+</script>
+
+</body>
+</html>
