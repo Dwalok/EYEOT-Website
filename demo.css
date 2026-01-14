@@ -1,0 +1,477 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: url("/static/images/back2.png") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background-color: transparent;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 85%;
+    gap: 20px;
+}
+
+.menu-vertical {
+    width: 250px;
+    margin-left: 0;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+    padding: 20px;
+    backdrop-filter: blur(15px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    max-height: 100%;
+    height: 100%;
+}
+
+.contenu-droite {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    align-content: start;
+    overflow-y: auto;   /* permet le scroll vertical */
+}
+
+
+.carre {
+    width: 500px;
+    height: 350px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.rpi-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    margin-bottom: 6px;
+    cursor: pointer;
+}
+
+.rpi-item.selected {
+    background-color: #062003c3;
+}
+
+.rpi-item:hover {
+    background-color: #1eff0045;
+}
+
+.rpi-arrow {
+    font-size: 18px;
+}
+
+.capteur-box {
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.capteur-line {
+    padding: 6px 12px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.capteur-line:hover {
+    background-color: #1eff0045;
+}
+
+.capteur-line.selected {
+    background-color: #062003c3;
+}
+
+.simplebar-scrollbar:before {
+    position: absolute;
+    content: '';
+    background: #ffffff;
+    border-radius: 20px;
+    left: 2px;
+    right: 2px;
+    opacity: 0;
+    transition: opacity .2s .5s linear;
+}
+
+.simplebar-track.simplebar-vertical {
+    height: 97%;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 11px;
+}
+.dragging {
+    opacity: 0.5;
+    border: 2px dashed #fff;
+}
+
+.bloc-gauche {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    height: 100%;
+    gap: 10px;
+}
+
+.liste-complete {
+    flex: 1;
+    max-height: 50%;
+   
+}
+
+.liste-projet {
+    flex: 1;
+    max-height: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 15px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    position: relative;
+    
+}
+
+/* Style commun pour les trois boutons */
+.btn-plus,
+.btn-moins,
+.btn-partage {
+    position: absolute;
+    top: 10px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-plus:hover,
+.btn-moins:hover,
+.btn-partage:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Position spécifique */
+.btn-plus {
+    right: 10px;
+}
+
+.btn-moins {
+    left: 10px;
+}
+
+.btn-partage {
+    left: 50px;
+}
+
+.titre-projets {
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    margin-top: 40px;
+    margin-bottom: 10px;
+}
+
+.zone-projets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    max-height: calc(100% - 80px);
+    padding-right: 5px;
+}
+
+.projet-item {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.projet-item:hover {
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999;
+}
+.modal-content {
+    background: rgba(255,255,255,0.15);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    text-align: center;
+    color: white;
+}
+.btn-supprimer {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: rgba(255, 0, 0, 0.5);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-supprimer:hover {
+    background-color: rgba(255, 0, 0, 0.7);
+}
+
+.btn-partager {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: rgba(0, 255, 0, 0.35);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-partager:hover {
+    background-color: rgba(0, 255, 0, 0.5);
+}
+
+.btn-annuler-modal {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-annuler-modal:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+.select-suppression {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 10px;
+    width: 80%;
+}
+
+.menu img,
+.profil img {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.menu img:hover,
+.profil img:hover {
+    transform: scale(1.1);
+}
+
+.menu, .profil {
+    padding: 10px;
+}
+
+.n8n_bouton
+{
+width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: absolute;
+  margin-left: 60px;
+  border-radius: 20px;
+}
+.n8n_bouton img
+{width: 40px;
+  height: 40px;
+  transition: transform 0.2s ease;
+  border-radius: 20px;
+}
+
+.n8n_bouton img:hover 
+{
+    transform: scale(1.1);
+}
+
+.frigate_bouton
+{
+width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: absolute;
+  margin-left: 110px;
+  border-radius: 20px;
+}
+.frigate_bouton img
+{width: 40px;
+  height: 40px;
+  transition: transform 0.2s ease;
+  border-radius: 20px;
+}
+
+.frigate_bouton img:hover 
+{
+    transform: scale(1.1);
+}
+
+.menu-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 60px;
+    margin-bottom: 20px;
+}
+
+.titre {
+    color: white;
+    font-size: 48px;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.esp-line {
+    font-weight: normal;
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    margin: 6px 0 2px 10px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1em;
+    letter-spacing: 0.5px;
+}
+
+.esp-line.selected,
+.esp-line:hover {
+    background: #1e5320;
+    color: #fff;
+}
+
+.esp-box {
+    background-color: rgba(255, 0, 0, 0);
+    margin-left: 20px;
+}
+
+
+.capteur-box .capteur-line {
+    background: rgba(255,255,255,0.13);
+    color: #fff;
+    border-radius: 8px;
+    margin: 4px 0 4px 24px;
+    font-size: 0.98em;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    height: 100%;
+}
+.capteur-box .capteur-line.selected,
+.capteur-box .capteur-line:hover {
+    background: #094221;
+    color: #222;
+}
+
+/* Étirement horizontal des items dans la grille */
+.contenu-droite {
+  justify-items: stretch; /* les items prennent toute la largeur de leurs colonnes */
+}
+
+/* Le widget doit pouvoir s'étirer à l'intérieur de l'item */
+.contenu-droite .widget {
+  width: 100% !important;
+  min-width: 0;
+  justify-self: stretch;
+}
+
+/* ───────────────────────────────────────────────────────────── */
+/* 1) CAS A : la classe w-size-* est posée sur .widget (compat)  */
+/* ───────────────────────────────────────────────────────────── */
+.contenu-droite .widget.w-size-1 {
+  grid-column: span 1;
+  grid-row: span 1;
+  height: 200px;
+}
+.contenu-droite .widget.w-size-2 {
+  grid-column: span 2;
+  grid-row: span 2;
+  height: 420px;
+}
+.contenu-droite .widget.w-size-3 {
+  grid-column: span 3;
+  grid-row: span 3;
+  height: 640px;
+}
+
+/* ───────────────────────────────────────────────────────────── */
+/* 2) CAS B : la classe w-size-* est posée sur l’item de grille  */
+/*            (parent direct dans .contenu-droite)               */
+/* ───────────────────────────────────────────────────────────── */
+.contenu-droite > .w-size-1 { grid-column: span 1; grid-row: span 1; }
+.contenu-droite > .w-size-2 { grid-column: span 2; grid-row: span 2; }
+.contenu-droite > .w-size-3 { grid-column: span 3; grid-row: span 3; }
+
+/* Hauteur du widget quand la classe est sur l’item parent */
+.contenu-droite > .w-size-1 .widget { height: 200px; }
+.contenu-droite > .w-size-2 .widget { height: 420px; }
+.contenu-droite > .w-size-3 .widget { height: 640px; }
+
+
+

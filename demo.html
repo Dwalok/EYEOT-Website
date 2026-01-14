@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EyeOT</title>
+    <link rel="stylesheet" href="demo.css">
+    <link rel="stylesheet" href="demo-overrides.css">
+    <link rel="icon" type="image/png" href="static/images/icone.png">
+</head>
+<body>
+    <div class="menu-container">
+        <div class="menu" onclick="window.location.href='index.html'">
+            <img src="static/images/menu.png" alt="Dashboard">
+        </div>
+        <div class="n8n_bouton" onclick="">
+            <img src="static/images/n8n.png" alt="Dashboard">
+        </div>
+        <div class="frigate_bouton" onclick="">
+            <img src="static/images/frigate.png" alt="Dashboard">
+        </div>
+        <h1 class="titre">EyeOT</h1>
+        <div class="profil" onclick="window.location.href='index.html'">
+            <img src="static/images/profil.png" alt="Outils">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="bloc-gauche">
+            <div class="liste-complete">
+                <div class="menu-vertical" id="rpi-list" data-simplebar>
+                    <!-- RPI dynamiques -->
+                </div>
+            </div>
+
+            <div class="liste-projet">
+                <button class="btn-moins" id="btn-modal-supp">-</button>
+                <button class="btn-plus" id="btn-add-project">+</button>
+                <button class="btn-partage" id="btn-modal-share">share</button>
+
+                <div class="titre-projets">Liste des projets</div>
+                <div class="zone-projets" id="zone-projets"></div>
+            </div>
+        </div>
+
+        <div class="contenu-droite" id="zone-widgets"></div>
+
+        <!-- Popup suppression projet -->
+        <div id="modal-suppression" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h3>Quel projet souhaitez-vous supprimer ?</h3>
+                <select id="select-projet-supp" class="select-suppression"></select>
+                <div style="display:flex;gap:10px;margin-top:15px;justify-content:center;">
+                    <button id="confirm-suppression" class="btn-supprimer">Supprimer</button>
+                    <button id="cancel-suppression" class="btn-annuler-modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popup partage projet -->
+        <div id="modal-partage" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h3>Partager un projet</h3>
+                <select id="select-projet-partage" class="select-suppression" style="margin-bottom: 15px;"></select>
+                <select id="select-user-partage" class="select-suppression"></select>
+                <div style="display:flex;gap:10px;margin-top:15px;justify-content:center;">
+                    <button id="confirm-partage" class="btn-partager">Partager</button>
+                    <button id="cancel-partage" class="btn-annuler-modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="demo-dashboard.js"></script>
+</body>
+</html>
